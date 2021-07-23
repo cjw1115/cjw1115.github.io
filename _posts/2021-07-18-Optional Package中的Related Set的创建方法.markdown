@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Optional Package中的Related Set的创建方法"
-date:   2021-07-23 12:20:59 +0800
-categories: UWP
+date:   2021-07-18 19:30:48 +0800
+categories: uwp
 ---
 
 在UWP开发中，我们可以通过Optional Package来独立分发我们的资源文件，程序组件等内容。XBOX里面的游戏用到的DLC，实际就是使用这项技术。总之它的好处多多，比如可以精简化我们的主程序尺寸，实现插件系统，动态内容分发等。
