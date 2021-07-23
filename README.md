@@ -1,1 +1,0 @@
-# democq.github.io
