@@ -80,7 +80,7 @@ categories: UWP
 
 需要注意，我们用到的Main Package安装包一定是MSIX或者AppX格式，不能带有Bundle后缀，否则MakeAppx.exe不能处理。所以要求我们在生成Main Pacakge安装包时在App Bundle选项处选择 ”Never“，如下图
 
-![]({{url}}/images/appbundle.png)
+![]({{url}}/Images/AppBundle.png)
 
 在相同目录下创建mApping.txt
    
