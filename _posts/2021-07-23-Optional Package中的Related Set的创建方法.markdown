@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "【UWP开发】Optional Package中的Related Set的创建方法"
+title:  "Optional Package中的Related Set的创建方法"
 date:   2021-07-23 12:20:59 +0800
-categories: test update
+categories: UWP
 ---
 
 在UWP开发中，我们可以通过Optional Package来独立分发我们的资源文件，程序组件等内容。XBOX里面的游戏用到的DLC，实际就是使用这项技术。总之它的好处多多，比如可以精简化我们的主程序尺寸，实现插件系统，动态内容分发等。
@@ -159,9 +159,9 @@ categories: test update
 通过如上两种方式添加Related Set后，就可以在我们的Main Pacakge中通过 LoadPacakgeLibrary API 加载OP中的DLL了。
 
 ## 本文示例代码
-* https://github.com/cjw1115/OptionalPacakge
+* [https://github.com/cjw1115/OptionalPacakge](https://github.com/cjw1115/OptionalPacakge)
 
 ## 参考文档
-* https://docs.microsoft.com/en-us/archive/blogs/Appinstaller/tooling-to-create-a-related-set
+* [Tooling to create a Related Set](https://docs.microsoft.com/en-us/archive/blogs/Appinstaller/tooling-to-create-a-related-set)
 
-* https://github.com/AppInstaller/OptionalPackageSample
+* [https://github.com/AppInstaller/OptionalPackageSample](https://github.com/AppInstaller/OptionalPackageSample)
