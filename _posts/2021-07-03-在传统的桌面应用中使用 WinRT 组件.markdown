@@ -1,0 +1,136 @@
+---
+layout: post
+title:  "在传统的桌面应用中使用 WinRT 组件"
+date:   2021-07-03 18:36:43 +0800
+categories: uwp
+---
+
+在实际开发中，我们的 UWP 需要通过 RPC 和系统服务通信，UWP 使用的 RPC 客户端模块是用 C++/CX 开发的 WinRT 组件，它可以直接被 UWP 工程引用。但是有时候我们想写一些诸如 Console 类的测试程序，如果也能复用该 WinRT 组件就最好不过了。本文根据这个背景展开。
+
+标题中提到的两个名词涉及范围如下：
+
+传统的桌面应用表示
+* 基于 C/C++ 的 Console，Win32 应用
+* 基于 C# 的 WinForm, WPF 应用
+
+WinRT 组件表示
+
+* 基于 C++ 或者 C++/CX 的 WinRT 组件
+
+WinRT 组件一般由两部分组成，WinMD 和 DLL, 大致来讲 winmd 包含了接口定义信息，DLL 包含具体的实现。
+
+WinRT 组件包含的 DLL 是基于 COM 技术，使用之前需要注册。一般在安装 UWP 的时候，安装包会负责 COM 注册，但是传统的桌面应用并不知道如何注册。虽然不注册这些 DLL并不影响编译，但是在运行时如果调用到相关的接口，会有异常抛出。所以需要一种免注册的技术。通过添加 manifest 文件，并在其中指定本地的 COM 服务器，也可以通过 COM 技术访问这些 DLL。
+
+WinRT 组件中的 winmd 文件实际和 .Net DLL 一样，可以直接被 .Net 工程引用并使用里面定义的各种接口。但是在 C/C++ 工程里面，我们只能使用头文件，借助 CppWinRT，可以基于 winmd 文件生成对应的头文件供我们调用，并且我们不需要关心这些头文件内部的实现细节。它内部实现了调用 COM 接口相关的代码，我们只需要关注接口即可。
+
+下面是具体实践演示，在演示中，我使用 CppWinRT 模板创建一个 WinRT 组件工程，命名为WinRTComponet，主要接口定义如下：
+
+	// IDL 接口定义文件
+	namespace WinRTComponent     //命名空间WinRTComponent
+	{
+		[default_interface]
+		runtimeclass Demo       //类名Demo
+		{
+			Demo();             //构造函数
+			String GetName();   //方法GetName
+		}
+	}
+
+该工程生成两个文件：
+* WinRTComponent.winmd
+* WinRTComponent.dll
+
+## 演示一，在 C++ console 应用中使用 WinRT组件
+### 1. 创建一个空的 C++ Console 工程 Comsumer_CppConsole
+### 2. 引入 WinRTComponent.winmd
+   
+   * 不能直接添加对工程 WinRTComponent 的引用，VS 会报目标平台不兼容的错误。
+   * 在 Nuget Manager 中，对该工程安装 Microsoft.Windows.CppWinRT，安装完成后，可以在添加引用面板中，找到生成的文件 WinRTComponent.winmd, 然后把它添加到工程中
+
+以上操作对应到工程配置文件，实际添加了如下片段
+
+	<ItemGroup>
+		<Reference Include="WinRTComponent">
+			<HintPath>..\x64\Debug\WinRTComponent\WinRTComponent.winmd</HintPath>
+			<IsWinMDFile>true</IsWinMDFile>
+		</Reference>
+	</ItemGroup>
+
+### 3. 生成头文件
+
+编译一次该工程，因为之前安装了 Nuget 包 Microsoft.Windows.CppWinRT，它会生成WinRTComponent.winmd 对应的头文件，这些文件位于工程目录下面，代码片段如下
+	
+	......
+	WINRT_EXPORT namespace winrt::WinRTComponent
+	{
+		struct __declspec(empty_bases) Demo : winrt::WinRTComponent::IDemo
+		{
+			Demo(std::nullptr_t) noexcept {}
+			Demo(void* ptr, take_ownership_from_abi_t) noexcept : winrt::WinRTComponent::IDemo(ptr, take_ownership_from_abi) {}
+			Demo();
+			Demo(Demo const&) noexcept = default;
+			Demo(Demo&&) noexcept = default;
+			Demo& operator=(Demo const&) & noexcept = default;
+			Demo& operator=(Demo&&) & noexcept = default;
+		};
+	}
+	......
+
+### 4. 编写客户代码
+
+如下代码片段中引用了生成的头文件，该头文件正是第3步中生成的，生成的头文件名一般是<winrt/命名空间.h>
+
+	#include <winrt/WinRTComponent.h>
+	#include <iostream>
+
+	int main()
+	{
+		winrt::WinRTComponent::Demo demo;
+		std::wcout << demo.GetName().c_str() << std::endl;
+		return 0;
+	}
+
+如果现在我们就编译执行这段代码，会遇到如下类似错误
+
+` Microsoft C++ exception: winrt::hresult_class_not_registered at memory location 0x000000BF422FF2F8`
+
+因为它找不到COM服务器
+
+### 5. 引入 WinRTComponent.dll
+   * 首先需要把 WinRTComponent.dll 复制到客户程序Comsumer_CppConsole.exe的目录，可以手动，也可以通过脚本
+   * 在工程中创建一个 manifest 清单文件，Comsumer_CppConsole.manifest，一定保证该文件的在VS 属性对话框中的文件类型是 Manifest Tool
+
+
+	<?xml version="1.0" encoding="utf-8"?>
+	<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+		<!--名称MyApplication.app 无关紧要，确保唯一就可以-->
+		<assemblyIdentity version="1.0.0.0" name="MyApplication.app"/>
+		<!--生成的DLL名称 WinRTComponent.dll-->
+		<file name="WinRTComponent.dll">
+			<!--IDL中定义的类名 WinRTComponent.Demo-->
+			<activatableClass
+				name="WinRTComponent.Demo"
+				threadingModel="both"
+				xmlns="urn:schemas-microsoft-com:winrt.v1" />
+		</file>
+	</assembly>
+
+添加完该文件后，实际在 VS 工程配置文件中多了如下配置
+
+	<ItemGroup>
+		<Manifest Include="Comsumer_CppConsole.manifest" />
+	</ItemGroup>
+
+现在可以尝试编译运行该 console app，但是依然会有如下错误
+
+` WinRT originate error - 0x8007007E : 'The specified module could not be found.`
+
+这是因为生成的 WinRT组件本身还有一些依赖的 DLL。
+
+### 6. 安装 Nuget 包 Microsoft.VCRTForwarders
+
+因为 WinRT 组件本身要用到很多的 VC 库，比如 vcruntime140_app.dll，他们和传统的桌面应用用到的库不同之处是有一个“_app”后缀，表明他们是应用商店专用版本，这种 VC 库并不会安装在用户机器，所以我们的 WinRT 组件当然找不到对应的库，所以会报错。
+
+VCRTForwarders 的作用就是把所有用到商店版本的 VC 库接口的调用，转发到随 Windows分发的桌面版本的VC 库中,这样就解决了依赖的问题。
+
+安装完成 VCRTForwarders 后，可以发现我们成功的在 Console 中调用到 WinRT 组件里的接口！
