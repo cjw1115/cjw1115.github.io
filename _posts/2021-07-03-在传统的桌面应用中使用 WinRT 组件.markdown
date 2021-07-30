@@ -92,16 +92,21 @@ WinRT 组件中的 winmd 文件实际和 .Net DLL 一样，可以直接被 .Net 
 		return 0;
 	}
 
+
+
 如果此刻就编译执行这段代码，会遇到如下类似错误，
 
 ` Microsoft C++ exception: winrt::hresult_class_not_registered at memory location 0x000000BF422FF2F8`
 
 因为它找不到 COM 服务器。
 
+## 注意！！！
+以上错误只会出现在"Microsoft.Windows.CppWinRT 2.0.200115.8"之前的版本，在此之后的版本中，CppWinrt 自带了对 Reg Free Winrt 的支持，不需要再单独配置 manifest 文件去指定 Winrt COM 服务器。也就是 第5步中的 manifest 文件不需要了！
+
 #### 5. 引入 WinRTComponent.dll
 
    * 首先需要把 WinRTComponent.dll 复制到客户程序 Comsumer_CppConsole.exe 的目录，可以手动，也可以通过脚本；
-   * 在工程中创建一个 manifest 清单文件，Comsumer_CppConsole.manifest，一定保证该文件的在VS 属性对话框中的文件类型是"Manifest Tool"
+   * 在工程中创建一个 manifest 清单文件，Comsumer_CppConsole.manifest，一定保证该文件的在VS 属性对话框中的文件类型是"Manifest Tool" （适用于版本号 < Microsoft.Windows.CppWinRT 2.0.200115.8）
 
 	<?xml version="1.0" encoding="utf-8"?>
 	<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
