@@ -65,3 +65,57 @@ categories: winrt
 Microsoft.VCRTForwarders.140 的原理是把所有的 Store 版本的 VC 运行时 API 全部链接到 Desktop 版本。组件如其名，就是一个 Forwarder!
 
 如果 CppWinrtComponent.vcxproj 中的 DesktopCompatible 被打开，则此步骤3不再必要。 
+
+#### 4. 调用 CppWinrtComponent 组件
+CppWinrt.exe 会解析 CppWinrtComponent.winmd 生成头文件 winrt/CppWinrtComponent.h, 通过该头文件，就可以调用组件 CppWinrtComponent 了。
+
+### C++/WinRT UWP
+C++/WinRT 有一个 VS 的拓展包，提供了几种基于 C++/WinRT 的项目模板。（https://marketplace.visualstudio.com/items?itemName=CppWinRTTeam.cppwinrt101804264）
+
+用模板创建一个 UWP 项目 ConsumerCppWinrtUWP.vcproj。
+
+#### 1. 添加对项目 CppWinrtComponent 生成的工程引用
+因为 ConsumerCppWinrtUWP 和 CppWinrtComponent 都是 Universal Windows 项目，所以可以直接通过 VS 添加对 CppWinrtComponent 的工程引用，CppWinrtComponent 输出的 CppWinrtComponent.winmd 和 CppWinrtComponent.dll 会被复制到 ConsumerCppWinrtUWP 的生成目录。
+
+#### 2. 调用 CppWinrtComponent 组件
+CppWinrt.exe 会解析 CppWinrtComponent.winmd 生成头文件 winrt/CppWinrtComponent.h, 通过该头文件，就可以调用组件 CppWinrtComponent 了。
+
+### .Net Framework Desktop
+在 VS 里面创建一个 .Net Framework console 项目 ConsumerNetFrameworkConsole.csproj，对于使用 Winrt 组件而言，基于.Net Framework 的 WPF 和 WinFrom 应用与 Console 应用没有任何区别。
+
+#### 1. 添加对项目 CppWinrtComponent 生成的工程引用
+
+#### 2. 创建 Reg Free Manimest 文件
+C++ WinRT 组件实际是一种进程内（In Process）COM 服务器，使用之前需要向 OS 注册。在 UWP 应用中，Package Manifest 里面可以声明所有用到的 WinRT 组件，在运行时或者安装时，OS 可以根据此文件完成 COM 服务器的注册调用（此处具体细节暂时不清楚，但大致原理应该是这样）。
+
+同样的，针对桌面应用也可以生成一个 manifest 文件，用来描述 WinRT 组件，该文件会被嵌入到桌面应用生成的可执行文件中，在运行时帮助我们完成对 WinRT 组件的加载（COM调用）。
+
+该文件结构如下：
+
+	<?xml version="1.0" encoding="utf-8"?>
+	<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+		<!--名称 MyApplication.app 无关紧要，确保唯一就可以-->
+		<assemblyIdentity version="1.0.0.0" name="MyApplication.app"/>
+		<!-- WinRT 组件的 DLL 名称 -->
+		<file name="CppWinrtComponent.dll">
+			<!-- 线程模型默认 both(代表 STA 和 MTA)，name 是在 WinRT 组件中定义的 "命名空间.接口名称" -->
+			<activatableClass
+				name="CppWinrtComponent.Class"
+				threadingModel="both"
+				xmlns="urn:schemas-microsoft-com:winrt.v1" />
+		</file>
+	</assembly>
+
+可以将该文件任意命名，此处命名为 app.manifest, 然后把它添加到 ConsumerNetFrameworkConsole.csproj 中，为避免出错，选择手动编辑该项目文件，加入如下节点：
+
+	<PropertyGroup>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+
+最后编译项目 ConsumerNetFrameworkConsole.csproj,该文件会被嵌入到 ConsumerNetFrameworkConsole.exe 中。所以在分发 ConsumerNetFrameworkConsole.exe 的时候，并不需要将 manifest 文件一起分发。
+
+#### 3. 使用 Nuget 包管理器给该项目安装 Microsoft.VCRTForwarders.140
+参考 `C++ Desktop` 步骤3。
+
+#### 4. 调用 CppWinrtComponent 组件
+因为添加了对项目 CppWinrtComponent 的引用，VS 可以从 CppWinrtComponent.winmd 中读取到接口的元数据信息，所以和普通的 .Net 对象一样，可以通过命名空间、类名访问到该 WinRT 组件。
