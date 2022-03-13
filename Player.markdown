@@ -3,6 +3,7 @@ layout: null
 title: Player
 ---
 
+<!DOCTYPE html>
 <html>
   <head>
     <title>MPEG-DASH</title>
@@ -12,7 +13,7 @@ title: Player
         
         // setup the video element and attach it to the Dash player
         function setupVideo() {
-            var url = "{{ /Videos/Escape_vision_atmos/stream.mpd  | relative_url }}";
+            var url = "/Videos/Escape_vision_atmos/stream.mpd";
             var player = dashjs.MediaPlayer().create();
             var video = document.querySelector("#html5video");
             player.initialize(video, url, true);
