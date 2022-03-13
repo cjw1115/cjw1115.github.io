@@ -1,3 +1,9 @@
+---
+layout: page
+title: Player
+permalink: /player/
+---
+
 <!DOCTYPE html>
 <html>
   <head>
