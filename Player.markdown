@@ -1,7 +1,6 @@
 ---
 layout: null
 title: Player
-permalink: /player/
 ---
 
 <html>
@@ -13,7 +12,7 @@ permalink: /player/
         
         // setup the video element and attach it to the Dash player
         function setupVideo() {
-            var url = "./output/stream.mpd";
+            var url = "{{ /Videos/Escape_vision_atmos/stream.mpd  | relative_url }}";
             var player = dashjs.MediaPlayer().create();
             var video = document.querySelector("#html5video");
             player.initialize(video, url, true);
