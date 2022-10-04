@@ -37,10 +37,10 @@ For the purposes of this Privacy Policy:
     for election of directors or other managing authority.
 
   * Application means the software program provided by the Company downloaded
-    by You on any electronic device, named Apple Store Tool 
+    by You on any electronic device, named iPhone pickup helper 
 
   * Company (referred to as either "the Company", "We", "Us" or "Our" in this
-    Agreement) refers to Apple Store Tool .
+    Agreement) refers to iPhone pickup helper .
 
   * Country refers to: China
 
