@@ -4,8 +4,7 @@ title: Privacy Policy
 permalink: /PrivacyPolicy/
 ---
 
-# Privacy Policy
-
-- [AppleStoreTool](./AppleStoreTool.md)
-- [AudioToolBox](./AudioToolBox.md)
-- [ModernMenu](./ModernMenu.md)
+- [Apple Store Tool](./AppleStoreTool.md)
+- [Audio Tool Box](./AudioToolBox.md)
+- [Modern Menu](./ModernMenu.md)
+- [Screen Mirroring Receiver](./MirroringReceiver.md)
