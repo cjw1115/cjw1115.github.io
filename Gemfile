@@ -29,4 +29,3 @@ end
 gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 
 gem "no-style-please"
-gem "jekyll-remote-theme"
