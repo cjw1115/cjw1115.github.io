@@ -4,9 +4,10 @@ description: 杂货市场
 url: "https://cjw1115.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  cjw1115
 
-theme: minima
+theme: no-style-please
 plugins:
   - jekyll-feed
 
 header_pages:
   - PrivacyPolicy/index.md
+  - about.markdown
