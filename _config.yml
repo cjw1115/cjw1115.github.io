@@ -11,4 +11,4 @@ plugins:
 
 header_pages:
   - PrivacyPolicy/index.md
-  - about.md
+  - about.markdown
