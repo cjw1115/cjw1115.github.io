@@ -10,6 +10,6 @@ plugins:
   - jekyll-feed
 
 header_pages:
-  - product/index.html
+  - product/index.md
   - PrivacyPolicy/index.md
   - about.markdown
