@@ -1,0 +1,304 @@
+---
+layout: page
+title: 屏幕镜像接收器 - 投屏 | AirPlay - Screen Mirroring Receiver
+permalink: /mirroring-receiver/
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>屏幕镜像接收器 - 投屏 | AirPlay - Screen Mirroring Receiver</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+            background: radial-gradient(circle at 20% 20%, #3b0764, #020617 60%);
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            filter: blur(130px);
+            opacity: 0.35;
+            z-index: -1;
+        }
+
+        .glow-gold { background: #f59e0b; top: -200px; left: -200px; }
+        .glow-purple { background: #9333ea; bottom: -200px; right: -200px; }
+
+        .container {
+            max-width: 980px;
+            margin: auto;
+            padding: 80px 20px 120px;
+        }
+
+        /* ===== 语言切换 ===== */
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 40px;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: none;
+            margin-left: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #fbbf24, #a855f7);
+            color: #020617;
+        }
+
+        /* ====== Hero ====== */
+        .hero {
+            text-align: center;
+            margin-bottom: 90px;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin-bottom: 18px;
+            background: linear-gradient(90deg, #fbbf24, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            max-width: 760px;
+            margin: auto;
+            font-size: 17px;
+            line-height: 1.9;
+            color: #cbd5f5;
+        }
+
+        .hero-tags {
+            margin-top: 28px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            margin: 6px;
+            background: linear-gradient(90deg, #fbbf24, #a855f7);
+            color: #020617;
+            font-weight: 600;
+        }
+
+        /* ====== FAQ ====== */
+        .faq-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 40px;
+        }
+
+        .faq-item {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 18px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(14px);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(251, 191, 36, 0.6);
+            box-shadow:
+                0 0 0 1px rgba(251,191,36,0.3),
+                0 20px 60px rgba(168,85,247,0.18);
+        }
+
+        .faq-question {
+            padding: 22px 26px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .faq-answer {
+            padding: 0 26px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s cubic-bezier(.4,0,.2,1), padding 0.25s;
+            color: #d1d5db;
+            line-height: 1.9;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 26px 26px;
+            max-height: 500px;
+        }
+
+        .arrow {
+            font-size: 16px;
+            transition: transform 0.25s;
+            opacity: 0.7;
+        }
+
+        .faq-item.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        .footer {
+            margin-top: 140px;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .lang-en { display: none; }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow glow-gold"></div>
+<div class="bg-glow glow-purple"></div>
+
+<div class="container">
+
+    <!-- 语言切换 -->
+    <div class="lang-switch">
+        <button class="lang-btn" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn" onclick="setLang('en')">English</button>
+    </div>
+
+    <!-- ====== Hero ====== -->
+    <div class="hero lang-zh">
+        <h1>屏幕镜像接收器 - 投屏</h1>
+        <div class="hero-desc">
+            一款专为 <b>Windows 电脑与 Xbox</b> 打造的高性能投屏接收软件，<br>
+            可将 <b>iPhone / iPad 的画面与声音</b> 实时投射到更大的屏幕上，<br>
+            适用于演示、观影、办公与远程展示等多种场景。
+        </div>
+
+        <div class="hero-tags">
+            <span class="hero-tag">720P - 4K</span>
+            <span class="hero-tag">30 / 60 FPS</span>
+            <span class="hero-tag">暗色 / 亮色</span>
+            <span class="hero-tag">全屏模式</span>
+            <span class="hero-tag">顶层小窗</span>
+        </div>
+    </div>
+
+    <div class="hero lang-en">
+        <h1>AirPlay - Screen Mirroring Receiver</h1>
+        <div class="hero-desc">
+            A high-performance AirPlay mirroring receiver for <b>Windows and Xbox</b>.<br>
+            It streams <b>iPhone and iPad screen & audio</b> to a larger display in real time,<br>
+            perfect for presentations, media playback, office work, and remote viewing.
+        </div>
+
+        <div class="hero-tags">
+            <span class="hero-tag">720P - 4K</span>
+            <span class="hero-tag">30 / 60 FPS</span>
+            <span class="hero-tag">Dark / Light</span>
+            <span class="hero-tag">Fullscreen</span>
+            <span class="hero-tag">Floating Window</span>
+        </div>
+    </div>
+
+    <!-- ====== FAQ ====== -->
+    <div class="faq-title">
+        <span class="lang-zh">常见问题 · FAQ</span>
+        <span class="lang-en">Frequently Asked Questions</span>
+    </div>
+
+    <!-- FAQ 1 -->
+    <div class="faq-item">
+        <div class="faq-question">
+            <span class="lang-zh">这个软件可以做什么？</span>
+            <span class="lang-en">What can this software do?</span>
+            <span class="arrow">▶</span>
+        </div>
+        <div class="faq-answer">
+            <div class="lang-zh">
+                ✅ 支持 <b>720P 至 4K</b> 多种分辨率<br>
+                ✅ 支持 <b>30 / 60 FPS</b> 两种帧率可选<br>
+                ✅ 支持 <b>暗色 / 亮色</b> 两种主题模式<br>
+                ✅ 支持 <b>动态全屏模式</b><br>
+                ✅ 支持 <b>特色顶层小窗模式</b>
+            </div>
+
+            <div class="lang-en">
+                ✅ Supports <b>720P to 4K</b> resolutions<br>
+                ✅ Supports <b>30 / 60 FPS</b> frame rates<br>
+                ✅ Supports <b>Dark / Light</b> themes<br>
+                ✅ Supports <b>Dynamic fullscreen mode</b><br>
+                ✅ Supports <b>Always-on-top floating window</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ 2 -->
+    <div class="faq-item">
+        <div class="faq-question">
+            <span class="lang-zh">为什么 Xbox 上投屏一段时间后会中断？</span>
+            <span class="lang-en">Why does mirroring disconnect on Xbox after a while?</span>
+            <span class="arrow">▶</span>
+        </div>
+        <div class="faq-answer">
+            <div class="lang-zh">
+                如果 Xbox 通过 <b>Wi-Fi 连接网络</b>，在投屏过程中遇到 <b>高网络吞吐量</b> 时，
+                已观察到 Xbox 的网络连接可能会被系统 <b>自动重置</b>，从而导致投屏中断。  
+                <br><br>
+                ✅ 为获得最佳稳定性，<b>强烈建议 Xbox 使用网线接入家庭局域网</b>。
+            </div>
+
+            <div class="lang-en">
+                When Xbox is connected via <b>Wi-Fi</b>, under <b>high network throughput</b> during mirroring,
+                the Xbox network connection may be <b>automatically reset by the system</b>,
+                which can cause the mirroring session to disconnect.
+                <br><br>
+                ✅ For best stability, <b>strongly recommend using wired Ethernet on Xbox</b>.
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 屏幕镜像接收器 - 投屏 / AirPlay - Screen Mirroring Receiver
+    </div>
+
+</div>
+
+<script>
+    function setLang(lang) {
+        document.querySelectorAll('.lang-zh').forEach(el => {
+            el.style.display = (lang === 'zh') ? 'block' : 'none';
+        });
+        document.querySelectorAll('.lang-en').forEach(el => {
+            el.style.display = (lang === 'en') ? 'block' : 'none';
+        });
+    }
+
+    // 默认中文
+    setLang('zh');
+
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => {
+            q.parentElement.classList.toggle('active');
+        });
+    });
+</script>
+
+</body>
+</html>
