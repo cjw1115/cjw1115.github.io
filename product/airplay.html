@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>屏幕镜像接收器 - 投屏 | AirPlay - Screen Mirroring Receiver</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <style>
         * {
             box-sizing: border-box;
@@ -45,7 +44,7 @@
         .container {
             max-width: 980px;
             margin: auto;
-            padding: 80px 20px 120px;
+            padding: 24px 20px 120px;
         }
 
         /* ===== 语言切换 ===== */
@@ -196,6 +195,8 @@
 
     <div class="container">
 
+        <nav data-product-nav data-current="airplay"></nav>
+
         <!-- 语言切换 -->
         <div class="lang-switch">
             <button class="lang-btn" onclick="setLang('zh')">中文</button>
@@ -338,6 +339,7 @@
 
     </div>
 
+    <script src="/product/product-nav.js"></script>
     <script type="module" src="https://get.microsoft.com/badge/ms-store-badge.bundled.js"></script>
     <script>
         function setLang(lang) {
