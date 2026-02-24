@@ -227,9 +227,15 @@
             display:flex;
             justify-content:center;
           ">
-                <a href="https://apps.microsoft.com/detail/9nslmxffgsz8?referrer=appbadge&mode=full">
-                    <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="300" />
-                </a>
+                <ms-store-badge
+                    productid="9nslmxffgsz8"
+                    cid="githubio"
+                    window-mode="full"
+                    theme="auto"
+                    size="large"
+                    language="en"
+                    animation="on">
+                </ms-store-badge>
             </div>
         </div>
 
@@ -250,6 +256,22 @@
                 <span class="hero-tag">Dark / Light</span>
                 <span class="hero-tag">Fullscreen</span>
                 <span class="hero-tag">Floating Window</span>
+            </div>
+
+            <div style="
+            margin-top:36px;
+            display:flex;
+            justify-content:center;
+          ">
+                <ms-store-badge
+                    productid="9nslmxffgsz8"
+                    cid="githubio"
+                    window-mode="full"
+                    theme="auto"
+                    size="large"
+                    language="en"
+                    animation="on">
+                </ms-store-badge>
             </div>
         </div>
 
@@ -316,6 +338,7 @@
 
     </div>
 
+    <script type="module" src="https://get.microsoft.com/badge/ms-store-badge.bundled.js"></script>
     <script>
         function setLang(lang) {
             document.querySelectorAll('.lang-zh').forEach(el => {
