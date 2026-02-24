@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLNA投屏接收器 - 音视频播放 | DLNA Receiver - Media Player</title>
+    <style>
+        :root {
+            --bg: #f6f8fb;
+            --panel: #ffffff;
+            --text: #111827;
+            --muted: #5f6b7a;
+            --line: #e5e7eb;
+            --brand: #0f766e;
+            --brand-2: #2563eb;
+            --shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.08), transparent 35%),
+                radial-gradient(circle at 100% 0%, rgba(15, 118, 110, 0.08), transparent 35%),
+                var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        }
+
+        .wrap {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 24px 18px 48px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .brand-mark img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            gap: 6px;
+            padding: 4px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            border-radius: 999px;
+            padding: 7px 11px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(37, 99, 235, 0.12));
+            color: var(--text);
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .hero {
+            padding: 24px;
+        }
+
+        .desc {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 15px;
+            max-width: 760px;
+        }
+
+        .tags {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .store-badge {
+            margin-top: 14px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tag {
+            border: 1px solid var(--line);
+            background: #fff;
+            color: #334155;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .grid {
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            padding: 18px;
+        }
+
+        .card h2 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .list li {
+            margin: 7px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 9px;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        }
+
+        .note {
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.65;
+        }
+
+        .footer {
+            margin-top: 16px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        html[lang="zh-CN"] .lang-en {
+            display: none !important;
+        }
+
+        html[lang="en"] .lang-zh {
+            display: none !important;
+        }
+
+        @media (max-width: 760px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero,
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-mark">
+                    <img src="https://store-images.s-microsoft.com/image/apps.57476.14026625804028907.67f4d1f4-6f85-40ea-bb62-2ee1edbc1fde.ebfb23b1-351e-48dd-9ffa-b2b7d44223e4?h=210"
+                        alt="DLNA Receiver - Media Player icon">
+                </div>
+                <div>
+                    <span class="lang-zh">DLNA投屏接收器 - 音视频播放</span>
+                    <span class="lang-en">DLNA Receiver - Media Player</span>
+                </div>
+            </div>
+
+            <div class="lang-switch" aria-label="Language switch">
+                <button id="btn-zh" class="lang-btn active" type="button" onclick="setLang('zh')">中文</button>
+                <button id="btn-en" class="lang-btn" type="button" onclick="setLang('en')">English</button>
+            </div>
+        </div>
+
+        <section class="panel hero">
+            <p class="desc lang-zh">
+                将手机中的视频、直播、音乐和照片投到 Windows PC 或 Xbox 大屏播放。支持发送端设备可用时的屏幕镜像。
+                轻量、安全、易用。
+            </p>
+            <p class="desc lang-en">
+                Cast media and mirror your screen from your phone to Windows PCs and Xbox. Watch live streams and videos
+                on the big screen, and enjoy music and photos wirelessly. Lightweight, secure, and easy to use.
+            </p>
+
+            <div class="tags">
+                <span class="tag">Windows</span>
+                <span class="tag">Xbox</span>
+                <span class="tag">Live Streams</span>
+                <span class="tag">Screen Mirroring</span>
+                <span class="tag">Music & Photos</span>
+            </div>
+
+            <div class="store-badge">
+                <ms-store-badge
+                    productid="9n5v83sl2j44"
+                    cid="githubio"
+                    window-mode="full"
+                    theme="auto"
+                    size="large"
+                    language="en"
+                    animation="on">
+                </ms-store-badge>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="panel card">
+                <h2>
+                    <span class="lang-zh">核心功能</span>
+                    <span class="lang-en">Core Features</span>
+                </h2>
+                <ul class="list">
+                    <li class="lang-zh">视频与直播投放到大屏播放</li>
+                    <li class="lang-en">Cast videos and live streams to a bigger screen</li>
+
+                    <li class="lang-zh">无线播放音乐与照片</li>
+                    <li class="lang-en">Enjoy music and photos wirelessly</li>
+
+                    <li class="lang-zh">发送端支持时可进行屏幕镜像</li>
+                    <li class="lang-en">Mirror your screen when supported by the sender device</li>
+                </ul>
+            </div>
+
+            <div class="panel card">
+                <h2>
+                    <span class="lang-zh">格式与平台</span>
+                    <span class="lang-en">Formats & Platform</span>
+                </h2>
+                <ul class="list">
+                    <li class="lang-zh">支持 Dolby Vision、HEVC、AV1 等高级视频格式</li>
+                    <li class="lang-en">Supports advanced video formats including Dolby Vision, HEVC, AV1, and more</li>
+
+                    <li class="lang-zh">播放能力由 Windows 和 Xbox 媒体能力提供</li>
+                    <li class="lang-en">Powered by Windows and Xbox media capabilities</li>
+
+                    <li class="lang-zh">适用于 Windows 和 Xbox</li>
+                    <li class="lang-en">Works on Windows and Xbox</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="note">
+            <span class="lang-zh">提示：实际播放效果可能因设备硬件、系统版本及发送端应用兼容性而有所不同。</span>
+            <span class="lang-en">Note: Actual playback may vary depending on hardware, OS version, and sender app compatibility.</span>
+        </div>
+
+        <div class="footer">
+            <span class="lang-zh">© 2026 DLNA投屏接收器 - 音视频播放</span>
+            <span class="lang-en">© 2026 DLNA Receiver - Media Player</span>
+        </div>
+    </div>
+
+    <script type="module" src="https://get.microsoft.com/badge/ms-store-badge.bundled.js"></script>
+    <script>
+        function setLang(lang) {
+            const isZh = lang === 'zh';
+            document.documentElement.lang = isZh ? 'zh-CN' : 'en';
+            document.getElementById('btn-zh').classList.toggle('active', isZh);
+            document.getElementById('btn-en').classList.toggle('active', !isZh);
+        }
+
+        setLang('zh');
+    </script>
+</body>
+
+</html>
